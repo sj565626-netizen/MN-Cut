@@ -14,10 +14,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract MN Cut project
-        run: |
-          unzip -q MN_Cut_v30.zip
-          ls -la MN_Cut_v29
+      - name: Extract project
+        run: unzip -q MN_Cut_v30.zip
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -30,8 +28,11 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Check JavaScript
         run: node --check MN_Cut_v29/app/src/main/assets/app.js
